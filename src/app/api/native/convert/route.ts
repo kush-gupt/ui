@@ -16,9 +16,8 @@ interface ConvertRequestBody {
 
 // This route calls the external REST service to convert any doc => markdown
 export async function POST(request: Request) {
-  try {
-    // 1. Parse JSON body from client
-    const body: ConvertRequestBody = await request.json();
+  // 1. Parse JSON body from client
+  const body: ConvertRequestBody = await request.json();
 
     // 2. Read the IL_FILE_CONVERSION_SERVICE from .env
     const baseUrl = process.env.IL_FILE_CONVERSION_SERVICE || 'http://doclingserve:5001';
@@ -30,6 +29,7 @@ export async function POST(request: Request) {
         Authorization: `Bearer ${apiKey}`
       },
     });
+
     if (!healthRes.ok) {
       console.error('The file conversion service is offline or returned non-OK status:', healthRes.status, healthRes.statusText);
       return NextResponse.json({ error: 'Conversion service is offline, only markdown files accepted.' }, { status: 503 });
@@ -41,8 +41,13 @@ export async function POST(request: Request) {
       console.error('Doc->md conversion service health check response not "ok":', healthData);
       return NextResponse.json({ error: 'Conversion service is offline, only markdown files accepted.' }, { status: 503 });
     }
+  } catch (error: unknown) {
+    console.error('Error conversion service health check:', error);
+    return NextResponse.json({ error: 'Conversion service is offline, only markdown files accepted.' }, { status: 503 });
+  }
 
-    // 4. Service is healthy, proceed with md conversion
+  // 4. Service is healthy, proceed with md conversion
+  try {
     const res = await fetch(`${baseUrl}/v1alpha/convert/source`, {
       method: 'POST',
       headers: {
