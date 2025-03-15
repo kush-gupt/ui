@@ -30,7 +30,8 @@ export const customModelFetcher = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Accept: 'text/event-stream'
+        Accept: 'text/event-stream',
+        Authorization: `Bearer ${selectedModel.apiKey}`
       },
       body: JSON.stringify(requestData),
       signal: newController.signal

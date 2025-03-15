@@ -11,7 +11,7 @@ DEVCONTAINER_BINARY_EXISTS ?= $(shell command -v devcontainer)
 .PHONY: check-dev-container-installed
 check-dev-container-installed: ## Check the devcontainer binary is in $PATH
 	@if [ -z "${DEVCONTAINER_BINARY_EXISTS}" ]; then \
-		echo "You do not have devcontainer installed, please isntall it!" ; \
+		echo "You do not have devcontainer installed, please install it!" ; \
 		exit 1 ; \
 	fi;
 
