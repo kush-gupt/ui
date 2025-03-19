@@ -1,4 +1,4 @@
-// src/components/Contribute/Knowledge/KnowledgeQuestionAnswerPairs/KnowledgeQuestionAnswerPairs.tsx
+// src/components/Contribute/Knowledge/KnowledgeQuestionAnswerPairs/KnowledgeFileSelectModal.tsx
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Button,

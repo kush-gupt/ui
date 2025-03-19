@@ -14,7 +14,7 @@ import {
   Flex,
   FlexItem
 } from '@patternfly/react-core';
-import { CatalogIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
+import { CatalogIcon, ExclamationCircleIcon, OptimizeIcon } from '@patternfly/react-icons';
 import { t_global_spacer_md as MdSpacerSize } from '@patternfly/react-tokens';
 
 interface Props {
@@ -101,6 +101,15 @@ const KnowledgeQuestionAnswerPairs: React.FC<Props> = ({
               </FormHelperText>
             ) : null}
           </FormGroup>
+          {onSelectContext ? (
+            <FlexItem>
+              <Tooltip content={<div>Generate Example Q&As from the context above</div>} position="top">
+                <Button variant="secondary" onClick={() => onSelectContext(seedExampleIndex)} style={{ marginBottom: '10px' }}>
+                  <OptimizeIcon /> Generate Example Q&A from Context
+                </Button>
+              </Tooltip>
+            </FlexItem>
+          ) : null}
           {seedExample.questionAndAnswers.map((questionAndAnswerPair: QuestionAndAnswerPair, questionAnswerIndex: number) => (
             <FormGroup
               key={seedExampleIndex * 100 + questionAnswerIndex * 10 + 0}

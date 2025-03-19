@@ -1,4 +1,4 @@
-// src/components/Contribute/Knowledge/Native/KnowledgeSeedExampleNative/KnowledgeQuestionAnswerPairsNative.tsx
+// src/components/Contribute/Knowledge/Native/KnowledgeSeedExampleNative/KnowledgeSeedExamples.tsx
 import React, { useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionToggle, Button, Flex, FlexItem } from '@patternfly/react-core';
 import { ExternalLinkAltIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons';
