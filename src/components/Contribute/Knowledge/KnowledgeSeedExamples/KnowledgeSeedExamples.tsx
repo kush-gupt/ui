@@ -1,8 +1,11 @@
 // src/components/Contribute/Knowledge/Native/KnowledgeSeedExampleNative/KnowledgeSeedExamples.tsx
 import React, { useState } from 'react';
+import { ValidatedOptions } from '@patternfly/react-core';
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
+import { generateText } from 'ai';
 import { Accordion, AccordionContent, AccordionItem, AccordionToggle, Button, Flex, FlexItem } from '@patternfly/react-core';
 import { ExternalLinkAltIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons';
-import type { KnowledgeSeedExample } from '@/types';
+import { QuestionAndAnswerPair, KnowledgeSeedExample, SkillSeedExample } from '@/types';
 import KnowledgeFileSelectModal from '@/components/Contribute/Knowledge/KnowledgeSeedExamples/KnowledgeFileSelectModal';
 import {
   createEmptyKnowledgeSeedExample,
@@ -12,7 +15,8 @@ import {
   handleKnowledgeSeedExamplesQuestionInputChange,
   handleKnowledgeSeedExamplesContextBlur,
   handleKnowledgeSeedExamplesContextInputChange,
-  toggleKnowledgeSeedExamplesExpansion
+  toggleKnowledgeSeedExamplesExpansion,
+  updateKnowledgeSeedExampleQA
 } from '@/components/Contribute/Utils/seedExampleUtils';
 import KnowledgeQuestionAnswerPairs from '@/components/Contribute/Knowledge/KnowledgeSeedExamples/KnowledgeQuestionAnswerPairs';
 import WizardPageHeader from '@/components/Common/WizardPageHeader';
@@ -34,6 +38,7 @@ interface Props {
   addDocumentInfo: (repoUrl: string, commitSha: string, docName: string) => void;
   repositoryUrl: string;
   commitSha: string;
+  onGenerateQA?: (seedExampleIndex: number) => Promise<void>; // New prop for generation
 }
 
 const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, onUpdateSeedExamples, addDocumentInfo, repositoryUrl, commitSha }) => {
@@ -116,6 +121,89 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
     onUpdateSeedExamples(seedExamples.filter((_, index: number) => index !== seedExampleIndex));
   };
 
+  const handleGenerateQA = async (seedExampleIndex: number) => {
+    const context = seedExamples[seedExampleIndex].context;
+    console.log(context)
+    if (!context) {
+      // Handle error: context is required
+      return;
+    }
+    try {
+      const provider = createOpenAICompatible({
+        name: 'ramalama',
+        // apiKey: process.env.GENERATE_API_KEY,
+        baseURL: 'http://localhost:8080/v1',
+      });
+  
+      const { text } = await generateText({
+        model: provider('default'),
+        prompt: '<s> <CON>' + context + '</CON>\n\n',
+        temperature: 0.8,
+        maxTokens: 750
+        
+      });
+
+      const parsedQA = parseGeneratedText(text);
+
+      //  // Update the seedExamples with the new Q&A pairs
+      onUpdateSeedExamples(updateKnowledgeSeedExampleQA(seedExamples, seedExampleIndex, parsedQA));
+ 
+      console.log(text)
+    } catch (error) {
+      console.error('Failed to generate QA:', error);
+      // Show error to user (e.g., set error state in seedExample)
+    }
+  };
+
+  const parseGeneratedText = (text: string): QuestionAndAnswerPair[] => {
+    const qaStrList = text.split('</END>');
+    if (!text.endsWith('</END>')) {
+      qaStrList.pop();
+    }
+  
+    const qaList: QuestionAndAnswerPair[] = [];
+    const rawQuestions: string[] = [];
+  
+    for (const qaStr of qaStrList) {
+      try {
+        const parts = qaStr.split('<ANS>');
+        if (parts.length !== 2) {
+          throw new Error(`invalid QA string: ${qaStr}`);
+        }
+        
+        let [Q_str, A_str] = parts;
+        Q_str = Q_str.trim();
+        A_str = A_str.trim();
+  
+        if (!A_str || !Q_str.startsWith('<QUE>')) {
+          throw new Error(`invalid question or answer string in QA_str: ${qaStr}`);
+        }
+  
+        Q_str = Q_str.replace('<QUE>', '').trim();
+  
+        if (rawQuestions.includes(Q_str.toLowerCase())) {
+          throw new Error(`duplicate question: ${Q_str}`);
+        }
+  
+        qaList.push({
+          immutable: false,
+          question: Q_str,
+          isQuestionValid: ValidatedOptions.success,
+          questionValidationError: '',
+          answer: A_str,
+          isAnswerValid: ValidatedOptions.success,
+          answerValidationError: ''
+        });
+  
+        rawQuestions.push(Q_str.toLowerCase());
+      } catch (error) {
+        console.error('Error parsing QA string:', error);
+      }
+    }
+  
+    return qaList;
+  };
+
   return (
     <Flex gap={{ default: 'gapMd' }} direction={{ default: 'column' }}>
       <FlexItem>
@@ -176,6 +264,7 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
                   handleQuestionBlur={handleQuestionBlur}
                   handleAnswerInputChange={handleAnswerInputChange}
                   handleAnswerBlur={handleAnswerBlur}
+                  onGenerateQA={handleGenerateQA}
                 />
               </AccordionContent>
             </AccordionItem>

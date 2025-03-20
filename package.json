@@ -17,15 +17,17 @@
     "test:e2e": "npx playwright test"
   },
   "dependencies": {
+    "@ai-sdk/openai-compatible": "^0.1.17",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@next/env": "^15.2.2",
     "@patternfly/chatbot": "^2.2.0-prerelease.34",
     "@patternfly/react-core": "^6.1.0",
     "@patternfly/react-icons": "^6.0.0",
     "@patternfly/react-styles": "^6.0.0",
-    "axios": "^1.8.3",
     "@patternfly/react-table": "^6.1.0",
     "@patternfly/virtual-assistant": "^2.0.2",
+    "ai": "^4.1.65",
+    "axios": "^1.8.3",
     "date-fns": "^4.1.0",
     "dompurify": "^3.2.4",
     "fs": "^0.0.1-security",

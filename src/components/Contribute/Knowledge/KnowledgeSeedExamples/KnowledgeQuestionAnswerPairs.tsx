@@ -27,11 +27,13 @@ interface Props {
   handleQuestionBlur: (seedExampleIndex: number, questionAndAnswerIndex: number) => void;
   handleAnswerInputChange: (seedExampleIndex: number, questionAndAnswerIndex: number, answerValue: string) => void;
   handleAnswerBlur: (seedExampleIndex: number, questionAndAnswerIndex: number) => void;
+  onGenerateQA?: (seedExampleIndex: number) => void;
 }
 
 const KnowledgeQuestionAnswerPairs: React.FC<Props> = ({
   seedExample,
   seedExampleIndex,
+  onGenerateQA,
   onSelectContext,
   handleContextInputChange,
   handleContextBlur,
@@ -101,15 +103,20 @@ const KnowledgeQuestionAnswerPairs: React.FC<Props> = ({
               </FormHelperText>
             ) : null}
           </FormGroup>
-          {onSelectContext ? (
-            <FlexItem>
-              <Tooltip content={<div>Generate Example Q&As from the context above</div>} position="top">
-                <Button variant="secondary" onClick={() => onSelectContext(seedExampleIndex)} style={{ marginBottom: '10px' }}>
-                  <OptimizeIcon /> Generate Example Q&A from Context
-                </Button>
-              </Tooltip>
-            </FlexItem>
-          ) : null}
+          <FlexItem>
+        {onGenerateQA && (
+          <Tooltip content="Generate Example Q&As from the context above" position="top">
+            <Button
+              variant="secondary"
+              onClick={() => onGenerateQA(seedExampleIndex)}
+              style={{ marginBottom: '10px' }}
+              isDisabled={!seedExample.context} // Disable if no context
+            >
+              <OptimizeIcon /> Generate Example Q&A from Context
+            </Button>
+          </Tooltip>
+        )}
+      </FlexItem>
           {seedExample.questionAndAnswers.map((questionAndAnswerPair: QuestionAndAnswerPair, questionAnswerIndex: number) => (
             <FormGroup
               key={seedExampleIndex * 100 + questionAnswerIndex * 10 + 0}

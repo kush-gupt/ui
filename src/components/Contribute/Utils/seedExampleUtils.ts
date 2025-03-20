@@ -303,3 +303,18 @@ export const createDefaultKnowledgeSeedExamples = (): KnowledgeSeedExample[] => 
   createEmptyKnowledgeSeedExample(),
   createEmptyKnowledgeSeedExample()
 ];
+
+export const updateKnowledgeSeedExampleQA = (
+  seedExamples: KnowledgeSeedExample[],
+  seedExampleIndex: number,
+  newQA: QuestionAndAnswerPair[]
+): KnowledgeSeedExample[] => {
+  return seedExamples.map((seedExample, index) =>
+    index === seedExampleIndex
+      ? {
+          ...seedExample,
+          questionAndAnswers: newQA
+        }
+      : seedExample
+  );
+};
