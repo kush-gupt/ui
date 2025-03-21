@@ -106,27 +106,27 @@ const KnowledgeQuestionAnswerPairs: React.FC<Props> = ({
             ) : null}
           </FormGroup>
           <FlexItem>
-        {onGenerateQA && (
-          <Tooltip content="Generate Example Q&As from the context above" position="top">
-            <Button
-              variant="secondary"
-              onClick={() => onGenerateQA(seedExampleIndex)}
-              style={{ marginBottom: '10px' }}
-              isDisabled={!seedExample.context} // Disable if no context
-              isLoading={seedExample.isLoading}
-            >
-              <OptimizeIcon /> Generate Example Q&A from Context
-            </Button>
-          </Tooltip>
-        )}
-      </FlexItem>
+            {onGenerateQA && (
+              <Tooltip content="Generate Example Q&As from the context above" position="top">
+                <Button
+                  variant="secondary"
+                  onClick={() => onGenerateQA(seedExampleIndex)}
+                  style={{ marginBottom: '10px' }}
+                  isDisabled={!seedExample.context} // Disable if no context
+                  isLoading={seedExample.isLoading}
+                >
+                  <OptimizeIcon /> Generate Example Q&A from Context
+                </Button>
+              </Tooltip>
+            )}
+          </FlexItem>
           {seedExample.questionAndAnswers.map((questionAndAnswerPair: QuestionAndAnswerPair, questionAnswerIndex: number) => (
             <FormGroup
               key={`${seedExampleIndex}-${questionAnswerIndex}`}
               isRequired={questionAnswerIndex < 3}
-              label={ // Wrap label text and button in Flex
-                <Flex
-                style={{ display: 'inline-flex', alignItems: 'center' }}>
+              label={
+                // Wrap label text and button in Flex
+                <Flex style={{ display: 'inline-flex', alignItems: 'center' }}>
                   <span>Q&A Pair {questionAnswerIndex + 1}</span>
                   {questionAnswerIndex > 2 && ( // Only show if not required
                     <Button

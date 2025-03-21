@@ -10,6 +10,7 @@ export const yamlKnowledgeSeedExampleToFormSeedExample = (
     return {
       immutable: true,
       isExpanded: false,
+      isLoading: false,
       context: yamlSeedExample.context,
       isContextValid,
       validationError,

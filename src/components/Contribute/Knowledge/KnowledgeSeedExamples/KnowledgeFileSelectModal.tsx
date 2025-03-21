@@ -223,7 +223,7 @@ const KnowledgeFileSelectModal: React.FC<Props> = ({
                     boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
                     borderRadius: '8px',
                     padding: '15px',
-                    border: highlightCard ? '2px solid #007BFF' : '1px solid #ccc',
+                    border: highlightCard ? '2px solid #007BFF' : '1px solid #ccc'
                   }}
                 >
                   <CardHeader>

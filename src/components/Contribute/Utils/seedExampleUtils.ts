@@ -218,20 +218,20 @@ export const handleKnowledgeSeedExamplesQuestionBlur = (
 //     seedExamples.map((seedExample: KnowledgeSeedExample, index: number) =>
 //       index === seedExampleIndex ? { ...seedExample, isLoading } : seedExample );
 
-  export const handleKnowledgeSeedLoading = (
-    seedExamples: KnowledgeSeedExample[],
-    seedExampleIndex: number,
-    isLoading: boolean
-  ): KnowledgeSeedExample[] => {
-    return seedExamples.map((seedExample, index) =>
-      index === seedExampleIndex
-        ? {
-            ...seedExample,
-            isLoading: isLoading
-          }
-        : seedExample
-    );
-  };
+export const handleKnowledgeSeedLoading = (
+  seedExamples: KnowledgeSeedExample[],
+  seedExampleIndex: number,
+  isLoading: boolean
+): KnowledgeSeedExample[] => {
+  return seedExamples.map((seedExample, index) =>
+    index === seedExampleIndex
+      ? {
+          ...seedExample,
+          isLoading: isLoading
+        }
+      : seedExample
+  );
+};
 
 export const handleKnowledgeSeedExamplesAnswerInputChange = (
   seedExamples: KnowledgeSeedExample[],

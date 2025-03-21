@@ -130,6 +130,7 @@ const questionAndAnswerPairs5: QuestionAndAnswerPair[] = [
 const knowledgeSeedExamples: KnowledgeSeedExample[] = [
   {
     immutable: true,
+    isLoading: false,
     isExpanded: true,
     context: `**Phoenix** is a minor [constellation](constellation "wikilink") in the
       [southern sky](southern_sky "wikilink"). Named after the mythical
@@ -150,6 +151,7 @@ const knowledgeSeedExamples: KnowledgeSeedExample[] = [
   },
   {
     immutable: true,
+    isLoading: false,
     isExpanded: true,
     context: `Phoenix is a small constellation bordered by [Fornax](Fornax "wikilink")
       and Sculptor to the north, Grus to the west, Tucana to the south,
@@ -182,6 +184,7 @@ const knowledgeSeedExamples: KnowledgeSeedExample[] = [
   },
   {
     immutable: true,
+    isLoading: false,
     isExpanded: true,
     context: `Ten stars have been found to have planets to date, and four planetary
       systems have been discovered with the [SuperWASP](SuperWASP "wikilink")
@@ -206,6 +209,7 @@ const knowledgeSeedExamples: KnowledgeSeedExample[] = [
   },
   {
     immutable: true,
+    isLoading: false,
     isExpanded: true,
     context: `The constellation does not lie on the
       [galactic plane](galactic_plane "wikilink") of the Milky Way, and there
@@ -237,6 +241,7 @@ const knowledgeSeedExamples: KnowledgeSeedExample[] = [
   },
   {
     immutable: true,
+    isLoading: false,
     isExpanded: true,
     context: `Phoenix is the radiant of two annual meteor showers. The Phoenicids,
     also known as the December Phoenicids, were first observed on 3 December 1887.

@@ -5,7 +5,7 @@ import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { generateText } from 'ai';
 import { Accordion, AccordionContent, AccordionItem, AccordionToggle, Button, Flex, FlexItem } from '@patternfly/react-core';
 import { ExternalLinkAltIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons';
-import { QuestionAndAnswerPair, KnowledgeSeedExample, SkillSeedExample } from '@/types';
+import { QuestionAndAnswerPair, KnowledgeSeedExample } from '@/types';
 import KnowledgeFileSelectModal from '@/components/Contribute/Knowledge/KnowledgeSeedExamples/KnowledgeFileSelectModal';
 import {
   createEmptyKnowledgeSeedExample,
@@ -18,7 +18,7 @@ import {
   toggleKnowledgeSeedExamplesExpansion,
   updateKnowledgeSeedExampleQA,
   handleKnowledgeSeedLoading,
-  removeKnowledgeSeedExampleQA,
+  removeKnowledgeSeedExampleQA
 } from '@/components/Contribute/Utils/seedExampleUtils';
 import KnowledgeQuestionAnswerPairs from '@/components/Contribute/Knowledge/KnowledgeSeedExamples/KnowledgeQuestionAnswerPairs';
 import WizardPageHeader from '@/components/Common/WizardPageHeader';
@@ -128,9 +128,9 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
   };
 
   const handleGenerateQA = async (seedExampleIndex: number) => {
-    onUpdateSeedExamples(handleKnowledgeSeedLoading(seedExamples, seedExampleIndex, true))
+    onUpdateSeedExamples(handleKnowledgeSeedLoading(seedExamples, seedExampleIndex, true));
     const context = seedExamples[seedExampleIndex].context;
-    console.log(context)
+    console.log(context);
     if (!context) {
       // Handle error: context is required
       return;
@@ -138,19 +138,18 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
     try {
       const envURL = process.env.GENERATE_BASE_URL;
       const provider = createOpenAICompatible({
-        name: process.env.GENERATE_NAME || "",
+        name: process.env.GENERATE_NAME || '',
         // apiKey: process.env.GENERATE_API_KEY,
-        baseURL: envURL || "http://localhost:8080/v1",
+        baseURL: envURL || 'http://localhost:8080/v1'
       });
-  
+
       const { text } = await generateText({
         model: provider('default'),
         prompt: '<CON>' + context + '</CON>\n\n',
         temperature: 0.8,
         maxTokens: 1000
-        
       });
-      
+
       const qindex = text.indexOf('<QUE>');
       const parsedtext = qindex === -1 ? text : text.substring(qindex);
 
@@ -158,7 +157,7 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
 
       //  // Update the seedExamples with the new Q&A pairs
       onUpdateSeedExamples(updateKnowledgeSeedExampleQA(seedExamples, seedExampleIndex, parsedQA));
- 
+
       console.log(parsedtext);
       //handleKnowledgeSeedLoading(seedExamples, seedExampleIndex, false);
     } catch (error) {
@@ -175,38 +174,38 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
     if (!text.endsWith('</END>')) {
       qaStrList.pop();
     }
-  
+
     const qaList: QuestionAndAnswerPair[] = [];
     const rawQuestions: string[] = [];
-  
+
     for (const qaStr of qaStrList) {
       try {
         const parts = qaStr.split('<ANS>');
         if (parts.length !== 2) {
-          console.log(parts)
+          console.log(parts);
           // throw new Error(`invalid QA string: ${qaStr}`);
-          continue
+          continue;
         }
-        
+
         let [Q_str, A_str] = parts;
         Q_str = Q_str.trim();
         A_str = A_str.trim();
-  
+
         if (!A_str || !Q_str.startsWith('<QUE>')) {
-          console.log(parts)
+          console.log(parts);
           // const qindex = Q_str.indexOf('<QUE>');
           // Q_str = qindex === -1 ? Q_str : Q_str.substring(qindex);
           // throw new Error(`invalid question or answer string in QA_str: ${qaStr}`);
-          continue
+          continue;
         }
-  
+
         Q_str = Q_str.replace('<QUE>', '').trim();
-  
+
         if (rawQuestions.includes(Q_str.toLowerCase())) {
           // throw new Error(`duplicate question: ${Q_str}`);
-          continue
+          continue;
         }
-  
+
         qaList.push({
           immutable: false,
           question: Q_str,
@@ -216,13 +215,13 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
           isAnswerValid: ValidatedOptions.success,
           answerValidationError: ''
         });
-  
+
         rawQuestions.push(Q_str.toLowerCase());
       } catch (error) {
         console.error('Error parsing QA string:', error);
       }
     }
-  
+
     return qaList;
   };
 

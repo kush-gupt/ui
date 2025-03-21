@@ -96,6 +96,7 @@ const EditKnowledgeNative: React.FC<EditKnowledgeClientComponentProps> = ({ bran
                     // iterate through questions_and_answers and create a new object for each
                     const example: KnowledgeSeedExample = {
                       immutable: index < 5 ? true : false,
+                      isLoading: false,
                       isExpanded: true,
                       context: seed.context,
                       isContextValid: ValidatedOptions.success,

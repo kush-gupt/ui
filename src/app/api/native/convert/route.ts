@@ -19,29 +19,29 @@ export async function POST(request: Request) {
   // 1. Parse JSON body from client
   const body: ConvertRequestBody = await request.json();
 
-    // 2. Read the IL_FILE_CONVERSION_SERVICE from .env
-    const baseUrl = process.env.IL_FILE_CONVERSION_SERVICE || 'http://doclingserve:5001';
-    const apiKey = process.env.IL_FILE_CONVERSION_SERVICE_API_KEY || '';
+  // 2. Read the IL_FILE_CONVERSION_SERVICE from .env
+  const baseUrl = process.env.IL_FILE_CONVERSION_SERVICE || 'http://doclingserve:5001';
+  const apiKey = process.env.IL_FILE_CONVERSION_SERVICE_API_KEY || '';
 
-    // 3. Check the health of the conversion service before proceeding
-    try {
-      const healthRes = await fetch(`${baseUrl}/health`, {
-        headers: {
-          Authorization: `Bearer ${apiKey}`
-        },
-      });
-
-      if (!healthRes.ok) {
-        console.error('The file conversion service is offline or returned non-OK status:', healthRes.status, healthRes.statusText);
-        return NextResponse.json({ error: 'Conversion service is offline, only markdown files accepted.' }, { status: 503 });
+  // 3. Check the health of the conversion service before proceeding
+  try {
+    const healthRes = await fetch(`${baseUrl}/health`, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`
       }
+    });
 
-      // Parse the health response body in case we need to verify its "status":"ok"
-      const healthData = await healthRes.json();
-      if (!healthData.status || healthData.status !== 'ok') {
-        console.error('Doc->md conversion service health check response not "ok":', healthData);
-        return NextResponse.json({ error: 'Conversion service is offline, only markdown files accepted.' }, { status: 503 });
-      }
+    if (!healthRes.ok) {
+      console.error('The file conversion service is offline or returned non-OK status:', healthRes.status, healthRes.statusText);
+      return NextResponse.json({ error: 'Conversion service is offline, only markdown files accepted.' }, { status: 503 });
+    }
+
+    // Parse the health response body in case we need to verify its "status":"ok"
+    const healthData = await healthRes.json();
+    if (!healthData.status || healthData.status !== 'ok') {
+      console.error('Doc->md conversion service health check response not "ok":', healthData);
+      return NextResponse.json({ error: 'Conversion service is offline, only markdown files accepted.' }, { status: 503 });
+    }
   } catch (error: unknown) {
     console.error('Error conversion service health check:', error);
     return NextResponse.json({ error: 'Conversion service is offline, only markdown files accepted.' }, { status: 503 });
