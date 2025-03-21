@@ -172,7 +172,7 @@ const KnowledgeFileSelectModal: React.FC<Props> = ({
             variant="warning"
             isInline
             title="All knowledge files need to originate from the same commit or 'Document Information' submission"
-            style={{ marginBottom: '20px' }}
+            style={{ marginBottom: '20px', color: 'white' }}
           >
             A commit SHA (<strong>{commitSha}</strong>) has already been selected in a previous seed example. All subsequent selections must use the
             same commit SHA for consistency.
@@ -224,7 +224,6 @@ const KnowledgeFileSelectModal: React.FC<Props> = ({
                     borderRadius: '8px',
                     padding: '15px',
                     border: highlightCard ? '2px solid #007BFF' : '1px solid #ccc',
-                    backgroundColor: highlightCard ? '#FFF' : '#fff'
                   }}
                 >
                   <CardHeader>
@@ -259,7 +258,6 @@ const KnowledgeFileSelectModal: React.FC<Props> = ({
                               style={{
                                 whiteSpace: 'pre-wrap',
                                 wordBreak: 'break-word',
-                                backgroundColor: '#f5f5f5',
                                 padding: '10px',
                                 borderRadius: '4px',
                                 maxHeight: '700px',

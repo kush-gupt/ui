@@ -210,6 +210,29 @@ export const handleKnowledgeSeedExamplesQuestionBlur = (
       : seedExample
   );
 
+// export const handleKnowledgeSeedLoading = (
+//     seedExamples: KnowledgeSeedExample[],
+//     seedExampleIndex: number,
+//     isLoading: boolean
+//   ): KnowledgeSeedExample[] =>
+//     seedExamples.map((seedExample: KnowledgeSeedExample, index: number) =>
+//       index === seedExampleIndex ? { ...seedExample, isLoading } : seedExample );
+
+  export const handleKnowledgeSeedLoading = (
+    seedExamples: KnowledgeSeedExample[],
+    seedExampleIndex: number,
+    isLoading: boolean
+  ): KnowledgeSeedExample[] => {
+    return seedExamples.map((seedExample, index) =>
+      index === seedExampleIndex
+        ? {
+            ...seedExample,
+            isLoading: isLoading
+          }
+        : seedExample
+    );
+  };
+
 export const handleKnowledgeSeedExamplesAnswerInputChange = (
   seedExamples: KnowledgeSeedExample[],
   seedExampleIndex: number,
@@ -293,7 +316,8 @@ export const createEmptyKnowledgeSeedExample = (): KnowledgeSeedExample => ({
   context: '',
   isContextValid: ValidatedOptions.default,
   validationError: '',
-  questionAndAnswers: [{ ...EmptyQuestionAndAnswer }, { ...EmptyQuestionAndAnswer }, { ...EmptyQuestionAndAnswer }]
+  questionAndAnswers: [{ ...EmptyQuestionAndAnswer }, { ...EmptyQuestionAndAnswer }, { ...EmptyQuestionAndAnswer }],
+  isLoading: false
 });
 
 export const createDefaultKnowledgeSeedExamples = (): KnowledgeSeedExample[] => [
@@ -313,7 +337,8 @@ export const updateKnowledgeSeedExampleQA = (
     index === seedExampleIndex
       ? {
           ...seedExample,
-          questionAndAnswers: newQA
+          questionAndAnswers: newQA,
+          isLoading: false
         }
       : seedExample
   );

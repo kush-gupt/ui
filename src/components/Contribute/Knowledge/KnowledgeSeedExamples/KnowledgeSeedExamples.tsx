@@ -16,7 +16,8 @@ import {
   handleKnowledgeSeedExamplesContextBlur,
   handleKnowledgeSeedExamplesContextInputChange,
   toggleKnowledgeSeedExamplesExpansion,
-  updateKnowledgeSeedExampleQA
+  updateKnowledgeSeedExampleQA,
+  handleKnowledgeSeedLoading
 } from '@/components/Contribute/Utils/seedExampleUtils';
 import KnowledgeQuestionAnswerPairs from '@/components/Contribute/Knowledge/KnowledgeSeedExamples/KnowledgeQuestionAnswerPairs';
 import WizardPageHeader from '@/components/Common/WizardPageHeader';
@@ -122,6 +123,7 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
   };
 
   const handleGenerateQA = async (seedExampleIndex: number) => {
+    onUpdateSeedExamples(handleKnowledgeSeedLoading(seedExamples, seedExampleIndex, true))
     const context = seedExamples[seedExampleIndex].context;
     console.log(context)
     if (!context) {
@@ -139,19 +141,26 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
         model: provider('default'),
         prompt: '<s> <CON>' + context + '</CON>\n\n',
         temperature: 0.8,
-        maxTokens: 750
+        maxTokens: 1000
         
       });
+      
+      const qindex = text.indexOf('<QUE>');
+      const parsedtext = qindex === -1 ? text : text.substring(qindex);
 
-      const parsedQA = parseGeneratedText(text);
+      const parsedQA = parseGeneratedText(parsedtext);
 
       //  // Update the seedExamples with the new Q&A pairs
       onUpdateSeedExamples(updateKnowledgeSeedExampleQA(seedExamples, seedExampleIndex, parsedQA));
  
-      console.log(text)
+      console.log(parsedtext);
+      //handleKnowledgeSeedLoading(seedExamples, seedExampleIndex, false);
     } catch (error) {
       console.error('Failed to generate QA:', error);
+      handleKnowledgeSeedLoading(seedExamples, seedExampleIndex, false);
       // Show error to user (e.g., set error state in seedExample)
+    } finally {
+      handleKnowledgeSeedLoading(seedExamples, seedExampleIndex, false);
     }
   };
 
@@ -168,7 +177,9 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
       try {
         const parts = qaStr.split('<ANS>');
         if (parts.length !== 2) {
-          throw new Error(`invalid QA string: ${qaStr}`);
+          console.log(parts)
+          // throw new Error(`invalid QA string: ${qaStr}`);
+          continue
         }
         
         let [Q_str, A_str] = parts;
@@ -176,7 +187,11 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
         A_str = A_str.trim();
   
         if (!A_str || !Q_str.startsWith('<QUE>')) {
+          console.log(parts)
+          // const qindex = Q_str.indexOf('<QUE>');
+          // Q_str = qindex === -1 ? Q_str : Q_str.substring(qindex);
           throw new Error(`invalid question or answer string in QA_str: ${qaStr}`);
+          // continue
         }
   
         Q_str = Q_str.replace('<QUE>', '').trim();

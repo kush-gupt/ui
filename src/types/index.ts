@@ -103,6 +103,7 @@ export interface SkillSeedExample extends SeedExample {
 export interface KnowledgeSeedExample extends SeedExample {
   context: string;
   questionAndAnswers: QuestionAndAnswerPair[];
+  isLoading: boolean;
 }
 
 export interface ContributionFormData {

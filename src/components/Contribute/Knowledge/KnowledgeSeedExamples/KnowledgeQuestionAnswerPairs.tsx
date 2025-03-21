@@ -111,6 +111,7 @@ const KnowledgeQuestionAnswerPairs: React.FC<Props> = ({
               onClick={() => onGenerateQA(seedExampleIndex)}
               style={{ marginBottom: '10px' }}
               isDisabled={!seedExample.context} // Disable if no context
+              isLoading={seedExample.isLoading}
             >
               <OptimizeIcon /> Generate Example Q&A from Context
             </Button>
