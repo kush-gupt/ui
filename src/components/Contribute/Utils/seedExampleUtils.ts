@@ -343,3 +343,19 @@ export const updateKnowledgeSeedExampleQA = (
       : seedExample
   );
 };
+
+export const removeKnowledgeSeedExampleQA = (
+  seedExamples: KnowledgeSeedExample[],
+  seedExampleIndex: number,
+  qaIndex: number
+): KnowledgeSeedExample[] => {
+  return seedExamples.map((example, idx) => {
+    if (idx === seedExampleIndex) {
+      return {
+        ...example,
+        questionAndAnswers: example.questionAndAnswers.filter((_, i) => i !== qaIndex)
+      };
+    }
+    return example;
+  });
+};

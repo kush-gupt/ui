@@ -17,7 +17,8 @@ import {
   handleKnowledgeSeedExamplesContextInputChange,
   toggleKnowledgeSeedExamplesExpansion,
   updateKnowledgeSeedExampleQA,
-  handleKnowledgeSeedLoading
+  handleKnowledgeSeedLoading,
+  removeKnowledgeSeedExampleQA,
 } from '@/components/Contribute/Utils/seedExampleUtils';
 import KnowledgeQuestionAnswerPairs from '@/components/Contribute/Knowledge/KnowledgeSeedExamples/KnowledgeQuestionAnswerPairs';
 import WizardPageHeader from '@/components/Common/WizardPageHeader';
@@ -111,6 +112,10 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
     onUpdateSeedExamples(toggleKnowledgeSeedExamplesExpansion(seedExamples, index));
   };
 
+  const handleDeleteQA = (seedExampleIndex: number, qaIndex: number): void => {
+    onUpdateSeedExamples(removeKnowledgeSeedExampleQA(seedExamples, seedExampleIndex, qaIndex));
+  };
+
   const addSeedExample = (): void => {
     const seedExample = createEmptyKnowledgeSeedExample();
     seedExample.immutable = false;
@@ -131,15 +136,16 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
       return;
     }
     try {
+      const envURL = process.env.GENERATE_BASE_URL;
       const provider = createOpenAICompatible({
-        name: 'ramalama',
+        name: process.env.GENERATE_NAME || "",
         // apiKey: process.env.GENERATE_API_KEY,
-        baseURL: 'http://localhost:8080/v1',
+        baseURL: envURL || "http://localhost:8080/v1",
       });
   
       const { text } = await generateText({
         model: provider('default'),
-        prompt: '<s> <CON>' + context + '</CON>\n\n',
+        prompt: '<CON>' + context + '</CON>\n\n',
         temperature: 0.8,
         maxTokens: 1000
         
@@ -157,10 +163,10 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
       //handleKnowledgeSeedLoading(seedExamples, seedExampleIndex, false);
     } catch (error) {
       console.error('Failed to generate QA:', error);
-      handleKnowledgeSeedLoading(seedExamples, seedExampleIndex, false);
+      onUpdateSeedExamples(handleKnowledgeSeedLoading(seedExamples, seedExampleIndex, false));
       // Show error to user (e.g., set error state in seedExample)
     } finally {
-      handleKnowledgeSeedLoading(seedExamples, seedExampleIndex, false);
+      //onUpdateSeedExamples(handleKnowledgeSeedLoading(seedExamples, seedExampleIndex, false));
     }
   };
 
@@ -190,14 +196,15 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
           console.log(parts)
           // const qindex = Q_str.indexOf('<QUE>');
           // Q_str = qindex === -1 ? Q_str : Q_str.substring(qindex);
-          throw new Error(`invalid question or answer string in QA_str: ${qaStr}`);
-          // continue
+          // throw new Error(`invalid question or answer string in QA_str: ${qaStr}`);
+          continue
         }
   
         Q_str = Q_str.replace('<QUE>', '').trim();
   
         if (rawQuestions.includes(Q_str.toLowerCase())) {
-          throw new Error(`duplicate question: ${Q_str}`);
+          // throw new Error(`duplicate question: ${Q_str}`);
+          continue
         }
   
         qaList.push({
@@ -280,6 +287,7 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
                   handleAnswerInputChange={handleAnswerInputChange}
                   handleAnswerBlur={handleAnswerBlur}
                   onGenerateQA={handleGenerateQA}
+                  onDeleteQA={handleDeleteQA}
                 />
               </AccordionContent>
             </AccordionItem>

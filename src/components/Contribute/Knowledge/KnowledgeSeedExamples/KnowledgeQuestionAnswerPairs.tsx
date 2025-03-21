@@ -14,7 +14,7 @@ import {
   Flex,
   FlexItem
 } from '@patternfly/react-core';
-import { CatalogIcon, ExclamationCircleIcon, OptimizeIcon } from '@patternfly/react-icons';
+import { CatalogIcon, ExclamationCircleIcon, OptimizeIcon, TrashIcon } from '@patternfly/react-icons';
 import { t_global_spacer_md as MdSpacerSize } from '@patternfly/react-tokens';
 
 interface Props {
@@ -28,6 +28,7 @@ interface Props {
   handleAnswerInputChange: (seedExampleIndex: number, questionAndAnswerIndex: number, answerValue: string) => void;
   handleAnswerBlur: (seedExampleIndex: number, questionAndAnswerIndex: number) => void;
   onGenerateQA?: (seedExampleIndex: number) => void;
+  onDeleteQA: (seedExampleIndex: number, qaIndex: number) => void;
 }
 
 const KnowledgeQuestionAnswerPairs: React.FC<Props> = ({
@@ -40,7 +41,8 @@ const KnowledgeQuestionAnswerPairs: React.FC<Props> = ({
   handleQuestionInputChange,
   handleQuestionBlur,
   handleAnswerInputChange,
-  handleAnswerBlur
+  handleAnswerBlur,
+  onDeleteQA
 }) => {
   const [contextWordCount, setContextWordCount] = useState(0);
   const MAX_WORDS = 500;
@@ -120,9 +122,23 @@ const KnowledgeQuestionAnswerPairs: React.FC<Props> = ({
       </FlexItem>
           {seedExample.questionAndAnswers.map((questionAndAnswerPair: QuestionAndAnswerPair, questionAnswerIndex: number) => (
             <FormGroup
-              key={seedExampleIndex * 100 + questionAnswerIndex * 10 + 0}
-              label={`Q&A Pair ${questionAnswerIndex + 1}`}
-              isRequired={questionAndAnswerPair.immutable}
+              key={`${seedExampleIndex}-${questionAnswerIndex}`}
+              isRequired={questionAnswerIndex < 3}
+              label={ // Wrap label text and button in Flex
+                <Flex
+                style={{ display: 'inline-flex', alignItems: 'center' }}>
+                  <span>Q&A Pair {questionAnswerIndex + 1}</span>
+                  {questionAnswerIndex > 2 && ( // Only show if not required
+                    <Button
+                      variant="plain"
+                      icon={<TrashIcon />}
+                      aria-label="Remove Q&A Pair"
+                      onClick={() => onDeleteQA(seedExampleIndex, questionAnswerIndex)}
+                      style={{ marginLeft: 'auto' }} // Push to far right
+                    />
+                  )}
+                </Flex>
+              }
             >
               <Flex direction={{ default: 'column' }} gap={{ default: 'gapSm' }}>
                 <FlexItem>
