@@ -128,7 +128,7 @@ const KnowledgeQuestionAnswerPairs: React.FC<Props> = ({
                 // Wrap label text and button in Flex
                 <Flex style={{ display: 'inline-flex', alignItems: 'center' }}>
                   <span>Q&A Pair {questionAnswerIndex + 1}</span>
-                  {questionAnswerIndex > 2 && ( // Only show if not required
+                  {seedExample.questionAndAnswers.length > 3 && ( // Only show if not required
                     <Button
                       variant="plain"
                       icon={<TrashIcon />}

@@ -145,7 +145,7 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
 
       const { text } = await generateText({
         model: provider('default'),
-        prompt: '<CON>' + context + '</CON>\n\n',
+        prompt: '<s> <CON>' + context + '</CON>\n\n',
         temperature: 0.8,
         maxTokens: 1000
       });
@@ -209,10 +209,10 @@ const KnowledgeSeedExamples: React.FC<Props> = ({ isGithubMode, seedExamples, on
         qaList.push({
           immutable: false,
           question: Q_str,
-          isQuestionValid: ValidatedOptions.success,
+          isQuestionValid: ValidatedOptions.warning,
           questionValidationError: '',
           answer: A_str,
-          isAnswerValid: ValidatedOptions.success,
+          isAnswerValid: ValidatedOptions.warning,
           answerValidationError: ''
         });
 
